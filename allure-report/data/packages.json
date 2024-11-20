@@ -1,0 +1,35 @@
+{
+  "uid" : "83edc06c07f9ae9e47eb6dd1b683e4e2",
+  "name" : "packages",
+  "children" : [ {
+    "name" : "com.mycompany.mall.api.LoginTest",
+    "children" : [ {
+      "name" : "testLoginFailure",
+      "uid" : "9c49218e3033427b",
+      "parentUid" : "f5706c8344490991089d34dd2a46fb2c",
+      "status" : "passed",
+      "time" : {
+        "start" : 1732001743955,
+        "stop" : 1732001744166,
+        "duration" : 211
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    }, {
+      "name" : "testLoginSuccess",
+      "uid" : "1d07bf05b7e60bfc",
+      "parentUid" : "f5706c8344490991089d34dd2a46fb2c",
+      "status" : "passed",
+      "time" : {
+        "start" : 1732001744220,
+        "stop" : 1732001744340,
+        "duration" : 120
+      },
+      "flaky" : false,
+      "newFailed" : false,
+      "parameters" : [ ]
+    } ],
+    "uid" : "com.mycompany.mall.api.LoginTest"
+  } ]
+}

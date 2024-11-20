@@ -1,0 +1,10 @@
+{
+  "testUser": {
+    "username": "yueyue",
+    "password": "123456"
+  },
+  "testUserFailure": {
+    "username": "testuser",
+    "password": "wrongpass"
+  }
+}

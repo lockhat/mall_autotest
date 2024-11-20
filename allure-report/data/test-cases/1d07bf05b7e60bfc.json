@@ -1,0 +1,96 @@
+{
+  "uid" : "1d07bf05b7e60bfc",
+  "name" : "testLoginSuccess",
+  "fullName" : "com.mycompany.mall.api.LoginTest.testLoginSuccess",
+  "historyId" : "bd56c7fd85741a8adab45e45a21a9c0f",
+  "time" : {
+    "start" : 1732001744220,
+    "stop" : 1732001744340,
+    "duration" : 120
+  },
+  "description" : "测试用户名、密码均正确，登录成功",
+  "descriptionHtml" : "<p>测试用户名、密码均正确，登录成功</p>\n",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ {
+    "name" : "setup",
+    "time" : {
+      "start" : 1732001744203,
+      "stop" : 1732001744205,
+      "duration" : 2
+    },
+    "description" : "",
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "hasContent" : false,
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false
+  } ],
+  "afterStages" : [ {
+    "name" : "teardown",
+    "time" : {
+      "start" : 1732001744342,
+      "stop" : 1732001744342,
+      "duration" : 0
+    },
+    "description" : "",
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "hasContent" : false,
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false
+  } ],
+  "labels" : [ {
+    "name" : "package",
+    "value" : "com.mycompany.mall.api.LoginTest"
+  }, {
+    "name" : "testClass",
+    "value" : "com.mycompany.mall.api.LoginTest"
+  }, {
+    "name" : "testMethod",
+    "value" : "testLoginSuccess"
+  }, {
+    "name" : "parentSuite",
+    "value" : "Default Suite"
+  }, {
+    "name" : "suite",
+    "value" : "mall"
+  }, {
+    "name" : "subSuite",
+    "value" : "com.mycompany.mall.api.LoginTest"
+  }, {
+    "name" : "host",
+    "value" : "ZejundeMacBook-Pro.local"
+  }, {
+    "name" : "thread",
+    "value" : "6421@ZejundeMacBook-Pro.local.main(1)"
+  }, {
+    "name" : "framework",
+    "value" : "testng"
+  }, {
+    "name" : "language",
+    "value" : "java"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure2"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : false,
+  "retry" : false,
+  "extra" : {
+    "severity" : "normal",
+    "retries" : [ ],
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "1d07bf05b7e60bfc.json",
+  "parameterValues" : [ ]
+}
