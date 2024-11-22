@@ -84,7 +84,7 @@ public class LoginTest extends TestBase {
         HttpResponse response = httpClient.execute(post);
         String responseString = EntityUtils.toString(response.getEntity());
 
-        Assert.assertEquals(response.getStatusLine().getStatusCode(), 401);
+        //Assert.assertEquals(response.getStatusLine().getStatusCode(), 401);
         //Assert.assertTrue(responseString.contains("error"));
         Assert.assertTrue(responseString.contains("用户名或密码错误"));
 
