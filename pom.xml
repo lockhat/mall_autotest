@@ -28,6 +28,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <allure.results.directory>./target/allure-results</allure.results.directory>
+                        <allure.logging.level>DEBUG</allure.logging.level>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
