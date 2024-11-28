@@ -73,6 +73,7 @@ public class LoginTest extends TestBase {
     @Step("输入：无效的用户名 预期：登录失败，返回状态码 401")
     @Test
     public void testLoginFailure() throws Exception {
+        System.out.println("Starting test execution testLoginFailure");
         JsonNode testData = getTestData("test-data/login.json", "testUserFailure");
         //String url = "http://60.204.173.174:8080/admin/login";
 
