@@ -74,7 +74,10 @@ public class LoginTest extends TestBase {
     @Test
     public void testLoginFailure() throws Exception {
         JsonNode testData = getTestData("test-data/login.json", "testUserFailure");
-        String url = "http://60.204.173.174:8080/admin/login";
+        //String url = "http://60.204.173.174:8080/admin/login";
+
+        String url = "http://localhost:8080/admin/login";
+
         String json = objectMapper.writeValueAsString(testData);
 
         HttpPost post = new HttpPost(url);
