@@ -66,7 +66,7 @@ public class PreferenceAreaTest extends TestBase {
 
     @Test
     public void testGetListAllFailure() throws Exception {
-        //"log"
+        //"log1"
 
 
     }
