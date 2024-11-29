@@ -46,7 +46,9 @@ public class PreferenceAreaTest extends TestBase {
     @Test
     public void testGetListAllSuccess() throws Exception {
         String token = "Bearer " + getToken("testUser");
-        String url = "http://60.204.173.174:8080/prefrenceArea/listAll";
+
+//        String url = "http://60.204.173.174:8080/prefrenceArea/listAll";
+        String url = "http://localhost:8080/prefrenceArea/listAll";
 
         HttpGet get = new HttpGet(url);
         get.setHeader("Content-type", "application/json");

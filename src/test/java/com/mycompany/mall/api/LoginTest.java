@@ -52,7 +52,9 @@ public class LoginTest extends TestBase {
         //将 Java 对象(JsonNode)转换为 JSON 字符串。
         String json = objectMapper.writeValueAsString(testData);
 
-        String url = "http://60.204.173.174:8080/admin/login";
+//        String url = "http://60.204.173.174:8080/admin/login";
+        String url = "http://localhost:8080/admin/login";
+
 
         HttpPost post = new HttpPost(url);
         post.setHeader("Content-type", "application/json");
