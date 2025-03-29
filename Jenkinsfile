@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven3'       // 这是你在 Jenkins 全局工具配置里设置的 Maven 名称
-        allure 'Allure'      // 这是你在 Jenkins 全局工具配置里的 Allure 名称
+        maven 'Maven3'       // Jenkins 全局 Maven 名称
+        allure 'Allure'      // Jenkins 全局 Allure 名称
     }
 
     environment {
@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('📥 拉取代码') {
             steps {
-                git branch: 'main', url: "${GIT_REPO}"
+                git branch: 'main', url: "${GIT_REPO}", credentialsId: 'github-ssh'
             }
         }
 
@@ -26,7 +26,8 @@ pipeline {
 
         stage('📊 生成 Allure 报告') {
             steps {
-                allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
+                echo "生成 Allure 报告"
+                step([$class: 'AllureReportBuildStep', results: [[path: 'target/allure-results']]])
             }
         }
     }
