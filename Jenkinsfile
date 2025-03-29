@@ -27,18 +27,12 @@ pipeline {
 
     post {
         always {
-            echo "📦 执行后动作：生成 Allure 报告（无论成功失败）"
-            allure([
-              results: [[path: 'target/allure-results']]
-            ])
-        }
-
-        success {
-            echo "✅ 测试成功，Allure 报告已生成"
-        }
-
-        failure {
-            echo "❌ 测试失败，请查看 Allure 报告"
+            echo "🧪 使用 CLI 方式生成 Allure 报告"
+            sh '''
+                allure generate target/allure-results -o target/allure-report --clean || true
+            '''
+            // 可以选择将 HTML 报告归档
+            archiveArtifacts artifacts: 'target/allure-report/**', allowEmptyArchive: true
         }
     }
 }
