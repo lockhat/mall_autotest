@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('📥 拉取代码') {
             steps {
-                git branch: 'main', url: "${GIT_REPO}", credentialsId: 'github-ssh'
+                git branch: 'master', url: "${GIT_REPO}", credentialsId: 'github-ssh'
             }
         }
 
