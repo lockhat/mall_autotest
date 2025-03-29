@@ -35,7 +35,7 @@
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
-                <version>2.10.0</version>
+                <version>2.11.2</version>
                 <configuration>
                     <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
                 </configuration>
@@ -65,8 +65,8 @@
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-testng</artifactId>
-            <version>2.28.0</version>
-<!--            <scope>test</scope>-->
+            <version>2.27.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -84,7 +84,5 @@
             <jackson-2-version>2.14.2</jackson-2-version>
             <aspectj.version>1.8.10</aspectj.version>
             <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <property>
-        </property>
     </properties>
 </project>

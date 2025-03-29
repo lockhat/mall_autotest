@@ -35,8 +35,8 @@ public class TestBase {
     public String getToken(String userKey) throws IOException {
         HttpClient httpClient = HttpClients.createDefault();
         JsonNode testData = getTestData("test-data/login.json", userKey);
-//        String url = "http://60.204.173.174:8080/admin/login";
-        String url = "http://localhost:8080/admin/login";
+        String url = "http://60.204.173.174:8080/admin/login";
+//        String url = "http://localhost:8080/admin/login";
         //将 Java 对象转换为 JSON 字符串。
         String json = objectMapper.writeValueAsString(testData);
 
