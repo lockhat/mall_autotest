@@ -32,12 +32,17 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            echo "✅ 测试成功，Allure 报告已生成"
+        post {
+            always {
+                echo "📦 执行后动作：生成 Allure 报告（无论成功失败）"
+                step([$class: 'AllureReportBuildStep', results: [[path: 'target/allure-results']]])
+            }
+            success {
+                echo "✅ 测试成功，Allure 报告已生成"
+            }
+            failure {
+                echo "❌ 测试失败，请查看 Allure 报告"
+            }
         }
-        failure {
-            echo "❌ 测试失败，请查看 Allure 报告"
-        }
-    }
+
 }
