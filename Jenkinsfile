@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven3'       // Jenkins 全局 Maven 名称
-        allure 'Allure'      // Jenkins 全局 Allure 名称
+        maven 'Maven3'
+        allure 'Allure'
     }
 
     environment {
@@ -23,26 +23,22 @@ pipeline {
                 sh 'mvn clean test'
             }
         }
-
-        stage('📊 生成 Allure 报告') {
-            steps {
-                echo "生成 Allure 报告"
-                step([$class: 'AllureReportBuildStep', results: [[path: 'target/allure-results']]])
-            }
-        }
     }
 
-        post {
-            always {
-                echo "📦 执行后动作：生成 Allure 报告（无论成功失败）"
-                step([$class: 'AllureReportBuildStep', results: [[path: 'target/allure-results']]])
-            }
-            success {
-                echo "✅ 测试成功，Allure 报告已生成"
-            }
-            failure {
-                echo "❌ 测试失败，请查看 Allure 报告"
-            }
+    post {
+        always {
+            echo "📦 执行后动作：生成 Allure 报告（无论成功失败）"
+            allure([
+              results: [[path: 'target/allure-results']]
+            ])
         }
 
+        success {
+            echo "✅ 测试成功，Allure 报告已生成"
+        }
+
+        failure {
+            echo "❌ 测试失败，请查看 Allure 报告"
+        }
+    }
 }
