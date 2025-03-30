@@ -9,16 +9,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.mall.admin.framework.TestBase;
 import com.mycompany.mall.admin.base.HttpClientUtil;
+import com.mycompany.mall.admin.base.Config;
+
 import io.qameta.allure.Description;
-import io.qameta.allure.Step;
-import io.qameta.allure.testng.AllureTestNg;
 import org.testng.Assert;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import com.mycompany.mall.admin.base.Log;
 import org.slf4j.Logger;
 
-@Listeners(AllureTestNg.class)
 public class LoginTest extends TestBase {
     private static final Logger log = Log.get(LoginTest.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -33,8 +31,7 @@ public class LoginTest extends TestBase {
         log.debug("请求体: {}", jsonString);
 
         // 2. 发起请求
-        String url = "http://60.204.173.174:8080/admin/login";
-//      String url = "http://localhost:8080/admin/login";
+        String url = Config.getBaseUrl() + "/admin/login";
         String responseString = HttpClientUtil.doPostJson(url, jsonString);
         log.debug("响应: {}", responseString);
 
@@ -53,8 +50,7 @@ public class LoginTest extends TestBase {
         log.debug("请求体: {}", jsonString);
 
         // 2. 发起请求
-        String url = "http://60.204.173.174:8080/admin/login";
-//      String url = "http://localhost:8080/admin/login";
+        String url = Config.getBaseUrl() + "/admin/login";
         String responseString = HttpClientUtil.doPostJson(url, jsonString);
         log.debug("响应: {}", responseString);
 //        System.out.println("Logback config location: " + LoggerFactory.getILoggerFactory().getClass());  //logback写文件排查

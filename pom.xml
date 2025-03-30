@@ -30,6 +30,10 @@
                         <allure.results.directory>./target/allure-results</allure.results.directory>
                         <allure.logging.level>DEBUG</allure.logging.level>
                     </systemPropertyVariables>
+                    <!-- ✅ 加上 testng.xml 配置 -->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
                 </configuration>
             </plugin>
             <plugin>

@@ -10,19 +10,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.mall.admin.base.DBUtil;
 import com.mycompany.mall.admin.base.HttpClientUtil;
 import com.mycompany.mall.admin.base.HttpResponseWrapper;
+import com.mycompany.mall.admin.base.Config;
+
 import com.mycompany.mall.admin.framework.TestBase;
 
 import io.qameta.allure.Description;
-import io.qameta.allure.Step;
-import io.qameta.allure.testng.AllureTestNg;
 import org.testng.Assert;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Listeners(AllureTestNg.class)
 public class PreferenceAreaTest extends TestBase {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -34,7 +32,7 @@ public class PreferenceAreaTest extends TestBase {
         String token = getToken("testUser");
 
         // 2. 构造请求
-        String url = "http://60.204.173.174:8080/prefrenceArea/listAll";
+        String url = Config.getBaseUrl() + "/prefrenceArea/listAll";
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("Authorization", token);
@@ -58,7 +56,7 @@ public class PreferenceAreaTest extends TestBase {
     @Description("未登录用户无法获取列表")
     @Test
     public void testGetListAllFailure() throws Exception {
-        String url = "http://60.204.173.174:8080/prefrenceArea/listAll";
+        String url = Config.getBaseUrl() + "/prefrenceArea/listAll";
 
         // 不传 Authorization
 //        Map<String, String> headers = Map.of("Content-Type", "application/json");

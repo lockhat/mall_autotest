@@ -10,7 +10,6 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.*;
 
 import javax.sql.DataSource;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
@@ -20,17 +19,7 @@ public class DBUtil {
 
     static {
         try {
-            // 1. 读取环境变量（优先用 -Denv=test 传参，否则默认 test）
-            String env = System.getProperty("env", "test"); // 可设置为 dev/test/uat/prod
-
-            String fileName = String.format("db-%s.properties", env);
-            InputStream is = DBUtil.class.getClassLoader().getResourceAsStream(fileName);
-            if (is == null) {
-                throw new RuntimeException("未找到数据库配置文件: " + fileName);
-            }
-
-            Properties props = new Properties();
-            props.load(is);
+            Properties props = Config.getAll(); // ✅ 从统一配置读取
 
             DruidDataSource ds = new DruidDataSource();
             ds.setDriverClassName(props.getProperty("driverClassName"));
