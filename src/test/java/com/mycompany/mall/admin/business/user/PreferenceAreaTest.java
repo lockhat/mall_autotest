@@ -1,4 +1,4 @@
-package com.mycompany.mall.api;
+package com.mycompany.mall.admin.business.user;
 
 /**
  * @Author: Liu Yue
@@ -7,14 +7,13 @@ package com.mycompany.mall.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mycompany.mall.testbase.TestBase;
+import com.mycompany.mall.admin.framework.TestBase;
 import io.qameta.allure.Description;
 import io.qameta.allure.Step;
 import io.qameta.allure.testng.AllureTestNg;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.testng.Assert;

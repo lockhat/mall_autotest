@@ -1,4 +1,4 @@
-package com.mycompany.mall.testbase;
+package com.mycompany.mall.admin.framework;
 
 /**
  * @Author: Liu Yue

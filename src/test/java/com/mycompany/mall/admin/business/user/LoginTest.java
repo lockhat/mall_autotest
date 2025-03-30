@@ -1,10 +1,10 @@
-package com.mycompany.mall.api;
+package com.mycompany.mall.admin.business.user;
 
 /**
  * @Author: Liu Yue
  * @Date: 2024/11/18 下午2:38
  */
-import com.mycompany.mall.testbase.TestBase;
+import com.mycompany.mall.admin.framework.TestBase;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
@@ -21,10 +21,6 @@ import org.testng.annotations.BeforeMethod;
 import io.qameta.allure.Description;
 import io.qameta.allure.Step;
 import io.qameta.allure.testng.AllureTestNg;
-
-import io.qameta.allure.Story;
-
-import java.io.IOException;
 
 @Listeners(AllureTestNg.class)
 public class LoginTest extends TestBase {
