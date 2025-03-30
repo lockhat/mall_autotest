@@ -1,8 +1,4 @@
-太好了！根据你上传的 `mall.zip` 实际代码结构（未使用 `StepUtils`），我为你**量身定制**一份 GitHub README 文档，内容贴合你当前项目情况，避免提及尚未使用的封装工具。
-
----
-
-## ✅ mall-autotest 项目 README.md（真实代码版本）
+## ✅ mall-autotest 项目 README.md
 
 ```markdown
 # 🧪 Mall 接口自动化测试项目
