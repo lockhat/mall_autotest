@@ -1,15 +1,11 @@
-## ✅ mall-autotest 项目 README.md
-
-```markdown
-# 🧪 Mall 接口自动化测试项目
+🚩 Mall 接口自动化测试项目
 
 本项目基于 Java + TestNG + HttpClient + Allure，实现对 mall 后台管理系统接口的自动化测试，涵盖用户登录、优选区商品查询等核心功能。
 
 ---
 
 ## 📁 项目结构说明
-```bash
-
+```
 mall-autotest/
 ├── src/
 │   ├── main/
@@ -158,6 +154,5 @@ Liu Yue（刘悦）
 ## 📄 License
 
 MIT License
-```
 
 ---
