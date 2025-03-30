@@ -5,63 +5,61 @@ package com.mycompany.mall.admin.framework;
  * @Date: 2024/11/18 下午2:36
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.testng.Assert;
-import org.testng.ITestResult;
+import com.mycompany.mall.admin.base.HttpClientUtil;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestBase {
+
     protected ObjectMapper objectMapper = new ObjectMapper();
-    public JsonNode getTestData(String filePath, String key) throws IOException {
-        //Path path = Paths.get(filePath);
-        String content = new String(Files.readAllBytes(Paths.get(filePath)));
-        JsonNode rootNode = objectMapper.readTree(content);
-        return rootNode.get(key);
-    }
-    public String getToken(String userKey) throws IOException {
-        HttpClient httpClient = HttpClients.createDefault();
-        JsonNode testData = getTestData("test-data/login.json", userKey);
-        String url = "http://60.204.173.174:8080/admin/login";
-//        String url = "http://localhost:8080/admin/login";
-        //将 Java 对象转换为 JSON 字符串。
-        String json = objectMapper.writeValueAsString(testData);
 
-        HttpPost post = new HttpPost(url);
-        post.setHeader("Content-type", "application/json");
-        post.setEntity(new StringEntity(json));
-
-        HttpResponse response = httpClient.execute(post);
-        String responseString = EntityUtils.toString(response.getEntity());
-        ObjectMapper objectMapper = new ObjectMapper();
-        //解析json字符串为一个树状结构的对象（即 JsonNode）
-        JsonNode rootNode = objectMapper.readTree(responseString);
-        //JsonNode（树结构-->节点的方式）提供方法来访问节点的键、值、数组、嵌套结构等
-        String token = rootNode.get("data").get("token").asText();
-//        String token = dataNode.get("token").asText();
-
-        return token;
-
-    }
-
-    public void logTestResult(ITestResult result) {
-        if (result.getStatus() == ITestResult.SUCCESS) {
-            System.out.println(result.getName() + " : PASSED");
-        } else {
-            System.out.println(result.getName() + " : FAILED");
+    /**
+     * 从 classpath 中读取 JSON 文件，并返回指定 key 对应的数据节点
+     */
+    public JsonNode getTestData(String resourcePath, String key) throws IOException {
+        InputStream is = getClass().getClassLoader().getResourceAsStream(resourcePath);
+        if (is == null) {
+            throw new IllegalArgumentException("找不到测试数据文件: " + resourcePath);
         }
+
+        JsonNode rootNode = objectMapper.readTree(is);
+        JsonNode targetNode = rootNode.get(key);
+        if (targetNode == null) {
+            throw new IllegalArgumentException("找不到 key: " + key + "，请检查 JSON 文件结构");
+        }
+
+        return targetNode;
+    }
+
+    /**
+     * 从 login.json 中读取用户信息，调用登录接口获取 token
+     */
+    public String getToken(String userKey) throws Exception {
+        JsonNode testData = getTestData("test-data/login.json", userKey);
+        String username = testData.get("username").asText();
+        String password = testData.get("password").asText();
+
+        Map<String, String> body = new HashMap<>();
+        body.put("username", username);
+        body.put("password", password);
+
+        String json = objectMapper.writeValueAsString(body);
+
+        String url = "http://60.204.173.174:8080/admin/login";
+        String responseString = HttpClientUtil.doPostJson(url, json);
+
+        JsonNode root = objectMapper.readTree(responseString);
+        JsonNode tokenNode = root.path("data").path("token");
+
+        if (tokenNode.isMissingNode() || tokenNode.isNull()) {
+            throw new IllegalArgumentException("登录接口响应中未包含 token，请检查响应结构或登录失败");
+        }
+
+        return "Bearer " + tokenNode.asText();
     }
 }
