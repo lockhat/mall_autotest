@@ -7,16 +7,38 @@ package com.mycompany.mall.admin.framework;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mycompany.mall.admin.base.Config;
 import com.mycompany.mall.admin.base.HttpClientUtil;
 
+import org.testng.annotations.BeforeSuite;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileWriter;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
 
 public class TestBase {
 
     protected ObjectMapper objectMapper = new ObjectMapper();
+
+    @BeforeSuite
+    public void generateAllureEnv() throws Exception {
+        Properties props = Config.getAll(); // 已从 config-*.properties 读取过
+
+        // 只挑选你希望展示在 Allure 报告中的字段
+        Properties allureProps = new Properties();
+        allureProps.setProperty("env", props.getProperty("env", "test"));
+        allureProps.setProperty("baseUrl", props.getProperty("baseUrl"));
+
+        File file = new File("target/allure-results/environment.properties");
+        file.getParentFile().mkdirs(); // 确保目录存在
+        try (FileWriter writer = new FileWriter(file)) {
+            allureProps.store(writer, "Allure 环境信息");
+        }
+    }
 
     /**
      * 从 classpath 中读取 JSON 文件，并返回指定 key 对应的数据节点
