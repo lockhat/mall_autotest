@@ -149,6 +149,13 @@ allure serve target/allure-results
 
 Allure 会自动生成 HTML 报告并打开浏览器预览。
 
+报告用例详情（支持描述、参数、分组等）：
+<img width="1434" alt="image" src="https://github.com/user-attachments/assets/e8cf51ad-d612-45ea-a89a-12bf37bd0369" />
+
+异常日志附件
+<img width="1428" alt="image" src="https://github.com/user-attachments/assets/27d5cb5b-2f8f-4f57-9815-6e24e4091ac3" />
+
+
 ---
 
 ### ✅ 环境信息自动展示
@@ -174,9 +181,6 @@ baseUrl=http://60.204.173.174:8080
 
 报告首页概览（包含用例数、环境变量等）：
 ![image](https://github.com/user-attachments/assets/866c5ca8-75c6-45e4-b249-c32a5636297a)
-
-报告用例详情（支持描述、参数、分组等）：
-<img width="1434" alt="image" src="https://github.com/user-attachments/assets/e8cf51ad-d612-45ea-a89a-12bf37bd0369" />
 
 ---
 
