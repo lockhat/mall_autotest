@@ -22,7 +22,8 @@ mall-autotest/
 │       │       └── product/      # 商品模块（PreferenceAreaTest）
 │       └── resources/
 │           ├── test-data/    # 测试数据 JSON / YAML
-│           └── logback.xml   # 日志配置文件
+            ├── logback.xml  # 日志配置文件
+│           └── testng.xml   # 灵活调整测试用例执行
 ├── pom.xml                  # Maven 构建配置
 ├── Jenkinsfile             # Jenkins 流水线配置
 └── README.md               # 项目说明文档
@@ -109,20 +110,178 @@ String json = objectMapper.writeValueAsString(testData);
 
 ---
 
-## 📊 Allure 报告支持
+## 📊 Allure 报告集成
 
-- 测试类使用 `@Description` 和 `@Step` 注解描述测试步骤
-- 可通过 `Allure.addAttachment(...)` 添加响应体、日志等内容
-- 报告生成命令：
+本项目已集成 [Allure TestNG](https://docs.qameta.io/allure/) 报告框架，用于生成结构清晰、可视化的接口测试报告。
+
+### ✅ 报告自动生成
+
+执行测试后，Maven 会在以下目录中自动生成原始测试数据：
+
+```
+target/allure-results/
+```
+
+无需额外配置，执行以下命令即可：
 
 ```bash
-allure generate target/allure-results -o target/allure-report --clean
-allure open target/allure-report
+mvn clean test
+```
+
+> `pom.xml` 中已配置了 `maven-surefire-plugin` 与 `testng.xml`，Allure 集成也已自动开启。
+
+---
+
+### ✅ 查看报告（本地）
+
+请确保已安装 Allure 命令行工具：
+
+```bash
+brew install allure   # macOS
+choco install allure  # Windows
+```
+
+然后执行：
+
+```bash
+allure serve target/allure-results
+```
+
+Allure 会自动生成 HTML 报告并打开浏览器预览。
+
+---
+
+### ✅ 环境信息自动展示
+
+本项目支持自动将当前环境信息写入 Allure 报告首页的 "Environment" 标签页。
+
+执行时将自动读取当前配置文件（如 `config-test.properties`）中的内容，并生成：
+
+📄 `target/allure-results/environment.properties`：
+
+```properties
+env=test
+baseUrl=http://60.204.173.174:8080
+```
+
+对应在报告首页展示为：
+
+| Key     | Value                          |
+|---------|-------------------------------|
+| env     | test                           |
+| baseUrl | http://60.204.173.174:8080     |
+
+
+报告首页概览（包含用例数、环境变量等）：
+![image](https://github.com/user-attachments/assets/866c5ca8-75c6-45e4-b249-c32a5636297a)
+
+报告用例详情（支持描述、参数、分组等）：
+<img width="1434" alt="image" src="https://github.com/user-attachments/assets/e8cf51ad-d612-45ea-a89a-12bf37bd0369" />
+
+---
+
+### 🛠 无需手动配置
+
+- 报告环境信息由 `TestBase.java` 中自动生成  
+- 所有环境字段统一维护在 `config-*.properties` 中  
+- 仅需通过 `-Denv=test` 切换不同环境，无需关心 Allure 配置
+
+---
+
+## 🧪 用例组织与执行方式
+
+本项目采用 **TestNG + Maven 插件** 方式组织接口自动化测试：
+
+- 所有测试用例统一在 `testng.xml` 中按模块维护  
+- `pom.xml` 中已配置自动加载，无需手动指定类或命令行参数
+
+### ✅ 测试套件示例：`src/test/resources/testng.xml`
+
+```xml
+<suite name="Mall接口自动化测试套件">
+  <parameter name="env" value="test" />
+
+  <test name="用户模块">
+    <classes>
+      <class name="com.mycompany.mall.admin.business.user.LoginTest"/>
+    </classes>
+  </test>
+
+  <test name="商品模块">
+    <classes>
+      <class name="com.mycompany.mall.admin.business.product.PreferenceAreaTest"/>
+    </classes>
+  </test>
+</suite>
+```
+
+### ✅ 执行命令（已自动加载 testng.xml）
+
+```bash
+mvn clean test
+```
+
+> 💡 已支持多环境切换（如 `test/dev/uat`），详见下方环境配置章节。
+
+---
+
+## 🌍 环境配置说明
+
+项目已支持根据不同环境自动加载配置，如接口地址、数据库连接等。
+
+### ✅ 环境配置文件目录：
+
+```
+src/test/resources/
+├── config-test.properties    # 测试环境
+├── config-dev.properties     # 开发环境（可选）
+├── config-uat.properties     # 预发布环境（可选）
+```
+
+### ✅ 配置示例（以 `config-test.properties` 为例）：
+
+```properties
+# 🔌 接口相关配置
+baseUrl=http://60.204.173.174:8080
+
+# 🛢 数据库连接配置
+driverClassName=com.mysql.cj.jdbc.Driver
+url=jdbc:mysql://60.204.173.174:3306/mall?useSSL=false
+username=reader
+password=123456
+initialSize=5
+maxActive=20
+
+# ✅ 添加用于展示到 Allure 的内容
+env=test
+```
+
+### ✅ 切换环境方式：
+
+通过 `-Denv=xxx` 控制当前使用的环境，默认为 `test`。
+
+```bash
+mvn clean test -Denv=test
+```
+
+或在 `pom.xml` 的 `systemPropertyVariables` 中默认配置：
+
+```xml
+<env>test</env>
 ```
 
 ---
 
-## 🧠 设计亮点总结
+## ✅ 整合说明：
+
+- 测试用例中可通过 `Config.getBaseUrl()` 获取接口地址  
+- 数据库操作统一通过 `DBUtil` 读取配置  
+- 所有配置集中管理，无需硬编码任何 URL 或数据库参数
+
+---
+
+
+## 🧠 总结
 
 - 简洁封装：HTTP、DB、日志三大工具类解耦独立
 - 测试清晰：业务分包、数据驱动、基类统一
