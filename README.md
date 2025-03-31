@@ -55,9 +55,10 @@ allure serve target/allure-results
 | `HttpClientUtil`   | 使用 Apache HttpClient 封装 GET/POST 请求 |
 | `HttpResponseWrapper` | 封装响应体与状态码，用于 GET/POST 请求结果处理 |
 | `DBUtil`           | 使用 Druid + Apache DbUtils 实现数据库连接与查询封装 |
+| `Config`   | 配置文件读取 |
 | `Log`              | 使用 SLF4J 封装日志生成器，统一日志输出入口 |
 
----
+
 
 ### ✅ 测试用例结构
 
@@ -66,7 +67,7 @@ allure serve target/allure-results
 | `LoginTest.java`       | 用户登录接口：验证正确登录、用户名错误场景 |
 | `PreferenceAreaTest.java` | 优选区接口：校验获取列表成功、未登录拦截等场景 |
 
----
+
 
 ### ✅ 测试基类
 
@@ -74,9 +75,8 @@ allure serve target/allure-results
 |------------|------|
 | `TestBase` | 所有测试类的基类，提供 token 获取、测试数据加载等通用方法 |
 
----
 
-## 🧾 测试数据示例（login.json）
+### ✅ 测试数据示例（login.json）
 
 路径：`src/test/resources/test-data/login.json`
 
@@ -107,88 +107,6 @@ String json = objectMapper.writeValueAsString(testData);
 - 配置路径：`src/test/resources/logback.xml`
 - 日志输出：控制台 + 每日文件（路径：`target/logs/test-YYYY-MM-DD.log`）
 - 支持自动轮转，保留最近 7 天日志
-
----
-
-## 📊 Allure 报告集成
-
-本项目已集成 [Allure TestNG](https://docs.qameta.io/allure/) 报告框架，用于生成结构清晰、可视化的接口测试报告。
-
-### ✅ 报告自动生成
-
-执行测试后，Maven 会在以下目录中自动生成原始测试数据：
-
-```
-target/allure-results/
-```
-
-无需额外配置，执行以下命令即可：
-
-```bash
-mvn clean test
-```
-
-> `pom.xml` 中已配置了 `maven-surefire-plugin` 与 `testng.xml`，Allure 集成也已自动开启。
-
----
-
-### ✅ 查看报告（本地）
-
-请确保已安装 Allure 命令行工具：
-
-```bash
-brew install allure   # macOS
-choco install allure  # Windows
-```
-
-然后执行：
-
-```bash
-allure serve target/allure-results
-```
-
-Allure 会自动生成 HTML 报告并打开浏览器预览。
-
-报告用例详情（支持描述、参数、分组等）：
-<img width="1434" alt="image" src="https://github.com/user-attachments/assets/e8cf51ad-d612-45ea-a89a-12bf37bd0369" />
-
-异常日志附件
-<img width="1428" alt="image" src="https://github.com/user-attachments/assets/27d5cb5b-2f8f-4f57-9815-6e24e4091ac3" />
-
-
----
-
-### ✅ 环境信息自动展示
-
-本项目支持自动将当前环境信息写入 Allure 报告首页的 "Environment" 标签页。
-
-执行时将自动读取当前配置文件（如 `config-test.properties`）中的内容，并生成：
-
-📄 `target/allure-results/environment.properties`：
-
-```properties
-env=test
-baseUrl=http://60.204.173.174:8080
-```
-
-对应在报告首页展示为：
-
-| Key     | Value                          |
-|---------|-------------------------------|
-| env     | test                           |
-| baseUrl | http://60.204.173.174:8080     |
-
-
-报告首页概览（包含用例数、环境变量等）：
-![image](https://github.com/user-attachments/assets/866c5ca8-75c6-45e4-b249-c32a5636297a)
-
----
-
-### 🛠 无需手动配置
-
-- 报告环境信息由 `TestBase.java` 中自动生成  
-- 所有环境字段统一维护在 `config-*.properties` 中  
-- 仅需通过 `-Denv=test` 切换不同环境，无需关心 Allure 配置
 
 ---
 
@@ -275,6 +193,87 @@ mvn clean test -Denv=test
 ```
 
 ---
+
+
+## 📊 Allure 报告集成
+
+本项目已集成 [Allure TestNG](https://docs.qameta.io/allure/) 报告框架，用于生成结构清晰、可视化的接口测试报告。
+
+### ✅ 报告自动生成
+
+执行测试后，Maven 会在以下目录中自动生成原始测试数据：
+
+```
+target/allure-results/
+```
+
+无需额外配置，执行以下命令即可：
+
+```bash
+mvn clean test
+```
+
+> `pom.xml` 中已配置了 `maven-surefire-plugin` 与 `testng.xml`，Allure 集成也已自动开启。
+
+
+### ✅ 查看报告（本地）
+
+请确保已安装 Allure 命令行工具：
+
+```bash
+brew install allure   # macOS
+choco install allure  # Windows
+```
+
+然后执行：
+
+```bash
+allure serve target/allure-results
+```
+
+Allure 会自动生成 HTML 报告并打开浏览器预览。
+
+报告用例详情（支持描述、参数、分组等）：
+<img width="1434" alt="image" src="https://github.com/user-attachments/assets/e8cf51ad-d612-45ea-a89a-12bf37bd0369" />
+
+异常日志附件
+<img width="1430" alt="image" src="https://github.com/user-attachments/assets/fdbd8450-5d25-4c48-84e5-fca3aa87e73d" />
+
+
+### ✅ 环境信息自动展示
+
+本项目支持自动将当前环境信息写入 Allure 报告首页的 "Environment" 标签页。
+
+执行时将自动读取当前配置文件（如 `config-test.properties`）中的内容，并生成：
+
+📄 `target/allure-results/environment.properties`：
+
+```properties
+env=test
+baseUrl=http://60.204.173.174:8080
+```
+
+对应在报告首页展示为：
+
+| Key     | Value                          |
+|---------|-------------------------------|
+| env     | test                           |
+| baseUrl | http://60.204.173.174:8080     |
+
+
+报告首页概览（包含用例数、环境变量等）：
+![image](https://github.com/user-attachments/assets/866c5ca8-75c6-45e4-b249-c32a5636297a)
+
+
+### 🛠 无需手动配置
+
+- 报告环境信息由 `TestBase.java` 中自动生成  
+- 所有环境字段统一维护在 `config-*.properties` 中  
+- 仅需通过 `-Denv=test` 切换不同环境，无需关心 Allure 配置
+
+
+---
+
 
 ## ✅ 整合说明：
 
