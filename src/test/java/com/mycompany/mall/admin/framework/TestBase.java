@@ -9,8 +9,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.mall.admin.base.Config;
 import com.mycompany.mall.admin.base.HttpClientUtil;
-
+import com.mycompany.mall.admin.base.Log;
 import org.testng.annotations.BeforeSuite;
+import io.qameta.allure.Allure;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileWriter;
@@ -18,11 +20,24 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
+import org.slf4j.Logger;
 
 public class TestBase {
 
+    protected final Logger log = Log.get(this.getClass());
     protected ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     *
+     * @param title
+     * @param e
+     * 异常捕获并打印到日志和 Allure 报告中
+     */
+    protected void handleError(String title, Exception e) {
+        log.error(title, e);
+        Allure.addAttachment(title + "-StackTrace", "text/plain", e.toString(), "txt");
+    }
+
 
     @BeforeSuite
     public void generateAllureEnv() throws Exception {
@@ -71,8 +86,8 @@ public class TestBase {
         body.put("password", password);
 
         String json = objectMapper.writeValueAsString(body);
+        String url = Config.getBaseUrl() + "/admin/login";
 
-        String url = "http://60.204.173.174:8080/admin/login";
         String responseString = HttpClientUtil.doPostJson(url, json);
 
         JsonNode root = objectMapper.readTree(responseString);

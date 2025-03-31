@@ -2,9 +2,9 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
 <suite name="Mall接口自动化测试套件" parallel="false">
-<!--    <listeners>-->
-<!--        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>-->
-<!--    </listeners>-->
+    <listeners>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
     <!-- 可选参数：传递环境变量（供 TestBase 使用） -->
     <parameter name="env" value="test" />
 

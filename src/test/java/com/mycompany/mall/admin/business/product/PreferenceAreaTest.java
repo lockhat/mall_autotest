@@ -27,45 +27,62 @@ public class PreferenceAreaTest extends TestBase {
 
     @Test
     @Description("成功获取优选区商品列表")
-    public void testGetListAllSuccess() throws Exception {
-        // 1. 获取 token
-        String token = getToken("testUser");
+    public void testGetListAllSuccess() {
+        log.info("开始执行 testGetListAllSuccess");
+        try {
+            // 1. 获取 token
+            String token = getToken("testUser");
 
-        // 2. 构造请求
-        String url = Config.getBaseUrl() + "/prefrenceArea/listAll";
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
-        headers.put("Authorization", token);
+            // 2. 构造请求
+            String url = Config.getBaseUrl() + "/prefrenceArea/listAll";
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Content-Type", "application/json");
+            headers.put("Authorization", token);
 
-        // 3. 请求接口
-        String responseString = HttpClientUtil.doGet(url, headers);
-        JsonNode rootNode = objectMapper.readTree(responseString);
-        String actualName = rootNode.get("data").get(0).get("name").asText();
+            // 3. 请求接口
+            String responseString = HttpClientUtil.doGet(url, headers);
+            log.debug("响应内容: {}", responseString);
 
-        // 4. 查询数据库预期值
-        String sql = "SELECT name FROM cms_prefrence_area ORDER BY id ASC LIMIT 1";
-        Object expectedNameObj = DBUtil.queryForScalar(sql);
-        String expectedName = expectedNameObj != null ? expectedNameObj.toString() : null;
+            JsonNode rootNode = objectMapper.readTree(responseString);
+            String actualName = rootNode.get("data").get(0).get("name").asText();
+            log.info("接口返回 name: {}", actualName);
 
-        // 5. 断言
-        Assert.assertNotNull(actualName, "接口返回的 name 字段为空");
-        Assert.assertEquals(actualName, expectedName, "接口返回的 name 与数据库中不一致");
+            // 4. 查询数据库预期值
+            String sql = "SELECT name FROM cms_prefrence_area ORDER BY id ASC LIMIT 1";
+            Object expectedNameObj = DBUtil.queryForScalar(sql);
+            String expectedName = expectedNameObj != null ? expectedNameObj.toString() : null;
+            log.info("数据库返回 name: {}", expectedName);
+
+            // 5. 断言
+            Assert.assertNotNull(actualName, "接口返回的 name 字段为空");
+            Assert.assertEquals(actualName, expectedName, "接口返回的 name 与数据库中不一致");
+
+        } catch (Exception e) {
+            handleError("优选区接口正常流程异常", e);
+            Assert.fail("testGetListAllSuccess 执行失败：" + e.getMessage());
+        }
     }
 
 
     @Description("未登录用户无法获取列表")
     @Test
-    public void testGetListAllFailure() throws Exception {
-        String url = Config.getBaseUrl() + "/prefrenceArea/listAll";
+    public void testGetListAllFailure() {
+        log.info("开始执行 testGetListAllFailure");
+        try {
+            String url = Config.getBaseUrl() + "/prefrenceArea/listAll";
 
-        // 不传 Authorization
-//        Map<String, String> headers = Map.of("Content-Type", "application/json");
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Content-Type", "application/json");
 
-        // 使用支持状态码返回的工具方法
-        HttpResponseWrapper response = HttpClientUtil.doGetWithStatus(url, headers);
+            HttpResponseWrapper response = HttpClientUtil.doGetWithStatus(url, headers);
+            log.info("响应状态码: {}", response.getStatusCode());
+            log.debug("响应体: {}", response.getBody());
 
-        Assert.assertTrue(response.getStatusCode() == 401 || response.getBody().contains("未登录"), "应拒绝未登录访问！");
+            Assert.assertTrue(response.getStatusCode() == 401 || response.getBody().contains("未登录"),
+                    "应拒绝未登录访问！");
+        } catch (Exception e) {
+            handleError("优选区接口未登录异常", e);
+            Assert.fail("testGetListAllFailure 执行失败：" + e.getMessage());
+        }
     }
 }
