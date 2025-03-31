@@ -33,6 +33,16 @@ public class Config {
         return get("baseUrl");
     }
 
+    //获取 HTTP 请求超时时间（默认 5000ms）
+    public static int getHttpTimeout() {
+        return Integer.parseInt(props.getProperty("http.timeout", "5000"));
+    }
+
+    //获取最大重试次数（默认 0 次）
+    public static int getHttpRetryCount() {
+        return Integer.parseInt(props.getProperty("http.retryCount", "0"));
+    }
+
     public static Properties getAll() {
         return props;
     }
