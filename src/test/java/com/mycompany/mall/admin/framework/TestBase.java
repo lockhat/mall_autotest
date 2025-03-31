@@ -36,6 +36,7 @@ public class TestBase {
      */
     protected void handleError(String title, Exception e) {
         log.error(title, e);
+        // 附件在报告中显示的标题名称；文件类型；文件内容；文件拓展名
         Allure.addAttachment(title + "-StackTrace", "text/plain", e.toString(), "txt");
     }
 

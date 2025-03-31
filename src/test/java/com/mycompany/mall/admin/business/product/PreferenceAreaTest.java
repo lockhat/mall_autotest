@@ -58,7 +58,7 @@ public class PreferenceAreaTest extends TestBase {
             Assert.assertEquals(actualName, expectedName, "接口返回的 name 与数据库中不一致");
 
         } catch (Exception e) {
-            handleError("优选区接口正常流程异常", e);
+            handleError("【正常获取优选区商品列表】用例执行失败，抛出异常", e);
             Assert.fail("testGetListAllSuccess 执行失败：" + e.getMessage());
         }
     }
@@ -81,7 +81,7 @@ public class PreferenceAreaTest extends TestBase {
             Assert.assertTrue(response.getStatusCode() == 401 || response.getBody().contains("未登录"),
                     "应拒绝未登录访问！");
         } catch (Exception e) {
-            handleError("优选区接口未登录异常", e);
+            handleError("【未登录用户无法获取列表】用例执行失败，抛出异常", e);
             Assert.fail("testGetListAllFailure 执行失败：" + e.getMessage());
         }
     }

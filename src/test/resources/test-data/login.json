@@ -3,12 +3,18 @@
     "username": "yueyue",
     "password": "123456",
     "expected": "token",
-    "desc": "正常登录，获取 token"
+    "desc": "用例名称：登录成功，能获取到token"
   },
-  "testUserFailure": {
+  "testUserNoExistUser": {
     "username": "testuser",
     "password": "wrongpass",
     "expected": "用户名或密码错误",
-    "desc": "用户名不存在"
+    "desc": "用例名称：用户名不存在，登录失败"
+  },
+  "testUserWrongPassword": {
+  "username": "yueyue",
+  "password": "1234567",
+  "expected": "密码不正确",
+  "desc": "用例名称：用户名存在，但密码不正确，登录失败"
   }
 }
