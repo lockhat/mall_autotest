@@ -27,7 +27,7 @@ import java.util.*;
 
 public class HttpClientUtil {
 
-    //创建HttpClient实例的方法（配置化）
+    //创建HttpClient实例（配置超时和重试）
     private static CloseableHttpClient createClient() {
 
         int timeout = Config.getHttpTimeout();
@@ -60,17 +60,36 @@ public class HttpClientUtil {
                 .setRetryHandler(retryHandler)
                 .build();
     }
-    //处理post请求--无header
+
+    /**
+     * 处理post请求--无header
+     * @param url
+     * @param jsonBody
+     * @return
+     * @throws Exception
+     */
     public static String doPostJson(String url, String jsonBody) throws Exception {
         return doPostJson(url, jsonBody, null);
     }
-    //处理post请求
+
+    /**
+     * 处理post请求
+     * @param url
+     * @param jsonBody
+     * @param headers
+     * @return
+     * @throws Exception
+     */
     public static String doPostJson(String url, String jsonBody, Map<String, String> headers) throws Exception {
         try (CloseableHttpClient client = createClient()) {
+            //实例化一个HTTP POST请求对象
             HttpPost post = new HttpPost(url);
             post.setHeader("Content-Type", "application/json"); // 必需头
 
-            // 添加自定义头
+            /** 添加自定义头
+             * 1、遍历 headers 中的每个键值对（key, value）
+             * 2、对每个键值对调用 post.setHeader(key, value)
+             */
             if (headers != null) {
                 headers.forEach(post::setHeader);
             }
@@ -85,7 +104,14 @@ public class HttpClientUtil {
             }
         }
     }
-    //处理get请求
+
+    /**
+     * 处理get请求
+     * @param url
+     * @param headers
+     * @return
+     * @throws Exception
+     */
     public static String doGet(String url, Map<String, String> headers) throws Exception {
         try (CloseableHttpClient client = createClient()) {
             HttpGet get = new HttpGet(url);

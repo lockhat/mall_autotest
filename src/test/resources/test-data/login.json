@@ -1,10 +1,14 @@
 {
   "testUser": {
     "username": "yueyue",
-    "password": "123456"
+    "password": "123456",
+    "expected": "token",
+    "desc": "正常登录，获取 token"
   },
   "testUserFailure": {
     "username": "testuser",
-    "password": "wrongpass"
+    "password": "wrongpass",
+    "expected": "用户名或密码错误",
+    "desc": "用户名不存在"
   }
 }

@@ -3,6 +3,7 @@ package com.mycompany.mall.admin.framework;
 /**
  * @Author: Liu Yue
  * @Date: 2024/11/18 下午2:36
+ * TestBase 作为所有测试用例的基类，可以集中管理测试过程中需要共享的数据（如 orderId、token 等），避免在每个测试用例中重复定义。
  */
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -58,19 +59,36 @@ public class TestBase {
     /**
      * 从 classpath 中读取 JSON 文件，并返回指定 key 对应的数据节点
      */
-    public JsonNode getTestData(String resourcePath, String key) throws IOException {
-        InputStream is = getClass().getClassLoader().getResourceAsStream(resourcePath);
-        if (is == null) {
-            throw new IllegalArgumentException("找不到测试数据文件: " + resourcePath);
-        }
+    public JsonNode getTestData(String resourcePath, String key) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                String msg = "❌ 找不到测试数据文件: " + resourcePath;
+                log.error(msg);
+                Allure.addAttachment("测试数据文件加载失败", msg);
+                throw new IllegalArgumentException(msg);
+            }
 
-        JsonNode rootNode = objectMapper.readTree(is);
-        JsonNode targetNode = rootNode.get(key);
-        if (targetNode == null) {
-            throw new IllegalArgumentException("找不到 key: " + key + "，请检查 JSON 文件结构");
-        }
+            JsonNode rootNode = objectMapper.readTree(is);
 
-        return targetNode;
+            // ✅ key 为 null 时返回整个 JSON 节点
+            if (key == null) {
+                return rootNode;
+            }
+
+            JsonNode targetNode = rootNode.get(key);
+            if (targetNode == null) {
+                String msg = "❌ 找不到 key: " + key + "，请检查 JSON 文件结构";
+                log.error(msg);
+                Allure.addAttachment("测试数据节点缺失", msg);
+                throw new IllegalArgumentException(msg);
+            }
+
+            return targetNode;
+
+        } catch (Exception e) {
+            handleError("读取测试数据失败", e);
+            throw new RuntimeException("读取测试数据失败: " + key, e);
+        }
     }
 
     /**

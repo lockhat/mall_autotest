@@ -13,56 +13,58 @@ import com.mycompany.mall.admin.base.Config;
 
 import io.qameta.allure.Description;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class LoginTest extends TestBase {
-//    private static final Logger log = Log.get(LoginTest.class);
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @Description("正常登录，获取token")
-    @Test
-    public void testLoginSuccess() {
-        log.info("开始执行 testLoginSuccess");
+    @Test(dataProvider = "loginData")
+    @Description("登录接口测试（JSON 数据驱动）")
+    public void testLoginFromJson(String username, String password, String expected, String desc) {
+        log.info("开始执行用例：{}", desc);
         try {
-            // 1. 准备测试数据
-            JsonNode testData = getTestData("test-data/login.json", "testUser");
-            String jsonString = objectMapper.writeValueAsString(testData);
-            log.debug("请求体: {}", jsonString);
+            // 构造请求体
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, String> map = new HashMap<>();
+            map.put("username", username);
+            map.put("password", password);
+            String jsonBody = objectMapper.writeValueAsString(map);
 
-            // 2. 发起请求
+//            String jsonBody = objectMapper.writeValueAsString(Map.of("username", username, "password", password));
+            log.debug("请求体: {}", jsonBody);
+
             String url = Config.getBaseUrl() + "/admin/login";
-            String responseString = HttpClientUtil.doPostJson(url, jsonString);
+            String responseString = HttpClientUtil.doPostJson(url, jsonBody);
             log.debug("响应: {}", responseString);
 
-            // 3. 断言
-            Assert.assertTrue(responseString.contains("token"), "返回结果中未包含 token！");
+            Assert.assertTrue(responseString.contains(expected), "响应未包含预期值：" + expected);
         } catch (Exception e) {
-            handleError("登录成功用例异常", e);  // ✅ 异常记录到日志 & Allure 附件
-            Assert.fail("执行 testLoginSuccess 失败：" + e.getMessage());
+            handleError(desc + " - 异常", e);
+            Assert.fail("测试用例执行失败：" + e.getMessage());
         }
     }
 
-    @Description("用户名不存在")
-    @Test
-    public void testLoginFailure() {
-        log.info("开始执行 testLoginFailure");
-        try {
-            // 1. 准备错误测试数据
-            JsonNode testData = getTestData("test-data/login.json", "testUserFailure");
-            String jsonString = objectMapper.writeValueAsString(testData);
-            log.debug("请求体: {}", jsonString);
+    @DataProvider(name = "loginData")
+    public Object[][] loginData() throws Exception {
+        JsonNode root = getTestData("test-data/login.json", null);
+        List<Object[]> dataList = new ArrayList<>();
 
-            // 2. 发起请求
-            String url = Config.getBaseUrl() + "/admin/login";
-            String responseString = HttpClientUtil.doPostJson(url, jsonString);
-            log.debug("响应: {}", responseString);
+        root.fields().forEachRemaining(entry -> {
+            JsonNode node = entry.getValue();
+            dataList.add(new Object[]{
+                    node.get("username").asText(),
+                    node.get("password").asText(),
+                    node.get("expected").asText(),
+                    node.get("desc").asText()
+            });
+        });
 
-            // 3. 断言失败场景
-            Assert.assertTrue(responseString.contains("用户名或密码错误"), "未返回预期错误提示！");
-        } catch (Exception e) {
-            handleError("登录失败用例异常", e);
-            Assert.fail("执行 testLoginFailure 失败：" + e.getMessage());
-        }
+        return dataList.toArray(new Object[0][]);
     }
+
 }
 
