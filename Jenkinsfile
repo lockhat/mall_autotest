@@ -23,6 +23,16 @@ pipeline {
                 sh 'mvn clean test -s /var/jenkins_home/settings.xml'
             }
         }
+        stage('📊 接口测试覆盖率分析') {
+                    steps {
+                        echo "开始生成接口覆盖率分析"
+                        // url维度 ，statusCode维度
+                        sh '''
+                            mvn exec:java -Dexec.mainClass=com.mycompany.mall.admin.utils.UrlCoverageRunner
+                            mvn exec:java -Dexec.mainClass=com.mycompany.mall.admin.utils.StatusCodeCoverageRunner
+                        '''
+                    }
+                }
     }
 
     post {
@@ -33,6 +43,9 @@ pipeline {
             '''
             // 可以选择将 HTML 报告归档
             archiveArtifacts artifacts: 'target/allure-report/**', allowEmptyArchive: true
+
+            // 归档接口覆盖率报告
+            archiveArtifacts artifacts: 'target/coverage/**', allowEmptyArchive: true
         }
     }
 }

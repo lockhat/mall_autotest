@@ -34,14 +34,15 @@ public class PreferenceAreaTest extends TestBase {
             String token = getToken("testUser");
 
             // 2. 构造请求
-            String url = Config.getBaseUrl() + "/prefrenceArea/listAll";
+            String url = "/prefrenceArea/listAll";
             Map<String, String> headers = new HashMap<>();
             headers.put("Content-Type", "application/json");
             headers.put("Authorization", token);
 
             // 3. 请求接口
-            String responseString = HttpClientUtil.doGet(url, headers);
-            log.debug("响应内容: {}", responseString);
+            String responseString = HttpClientUtil.doGet(Config.getBaseUrl() + url, headers);
+            log.debug("请求地址: [GET] " + url);
+            log.debug("响应: {}", responseString);
 
             JsonNode rootNode = objectMapper.readTree(responseString);
             String actualName = rootNode.get("data").get(0).get("name").asText();
@@ -69,14 +70,14 @@ public class PreferenceAreaTest extends TestBase {
     public void testGetListAllFailure() {
         log.info("开始执行 testGetListAllFailure");
         try {
-            String url = Config.getBaseUrl() + "/prefrenceArea/listAll";
+            String url = "/prefrenceArea/listAll";
 
             Map<String, String> headers = new HashMap<>();
             headers.put("Content-Type", "application/json");
 
-            HttpResponseWrapper response = HttpClientUtil.doGetWithStatus(url, headers);
-            log.info("响应状态码: {}", response.getStatusCode());
-            log.debug("响应体: {}", response.getBody());
+            HttpResponseWrapper response = HttpClientUtil.doGetWithStatus(Config.getBaseUrl() + url, headers);
+            log.debug("请求地址: [GET] " + url);
+            log.debug("响应: {}", response.getBody());
 
             Assert.assertTrue(response.getStatusCode() == 401 || response.getBody().contains("未登录"),
                     "应拒绝未登录访问！");

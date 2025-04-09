@@ -34,11 +34,10 @@ public class LoginTest extends TestBase {
             map.put("password", password);
             String jsonBody = objectMapper.writeValueAsString(map);
 
-//            String jsonBody = objectMapper.writeValueAsString(Map.of("username", username, "password", password));
+            String url = "/admin/login";
+            String responseString = HttpClientUtil.doPostJson(Config.getBaseUrl() + url, jsonBody);
+            log.debug("请求地址: [POST] " + url);
             log.debug("请求体: {}", jsonBody);
-
-            String url = Config.getBaseUrl() + "/admin/login";
-            String responseString = HttpClientUtil.doPostJson(url, jsonBody);
             log.debug("响应: {}", responseString);
 
             Assert.assertTrue(responseString.contains(expected), "响应未包含预期值：" + expected);
