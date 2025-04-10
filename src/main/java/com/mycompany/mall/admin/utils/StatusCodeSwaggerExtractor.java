@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.io.File;
 import java.util.*;
 
 public class StatusCodeSwaggerExtractor {
@@ -21,8 +22,11 @@ public class StatusCodeSwaggerExtractor {
     private static final String OUTPUT_FILE = "target/coverage/swagger_status_codes.json";
 
     public static void main(String[] args) throws Exception {
+        File outputDir = new File("target/coverage");
+        if (!outputDir.exists()) {
+            outputDir.mkdirs(); // 自动创建目录
+        }
         String json = getSwaggerJsonFromUrl(SWAGGER_JSON_URL);
-
         JsonObject swagger = new Gson().fromJson(json, JsonObject.class);
         JsonObject paths = swagger.getAsJsonObject("paths");
 

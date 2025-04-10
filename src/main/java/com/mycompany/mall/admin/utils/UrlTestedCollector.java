@@ -3,6 +3,9 @@ package com.mycompany.mall.admin.utils;
 /**
  * @Author: Liu Yue
  * @Date: 2025/4/9 上午10:04
+ * 1）静态分析测试源码（位于 src/test/java），
+ * 2）提取出接口测试中实际调用过的 URL 路径（如 /admin/login），
+ * 3）最后将这些 URL 写入一个文件 target/coverage/tested_urls.txt，供后续 Swagger 对比使用。
  */
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -36,6 +39,10 @@ public class UrlTestedCollector {
         System.out.println("📋 检测到的 URL:");
         foundUrls.stream().sorted().forEach(System.out::println);
         // ✅ 写入 tested_urls.txt 文件
+        File outputDir = new File("target/coverage");
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
         Files.write(Paths.get("target/coverage/tested_urls.txt"), foundUrls);
         System.out.println("\n📁 已写入 target/coverage/tested_urls.txt，供 Swagger 对比使用");
     }

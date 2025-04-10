@@ -103,8 +103,8 @@ public class StatusCodeCoverageAnalyzer {
         Files.createDirectories(envFile.getParent());
 
         List<String> lines = Arrays.asList(
-                String.format("状态码覆盖率=%.2f%%", rate * 100),
-                "已覆盖状态码数=" + covered + "/" + total
+                String.format("status_code_coverage_percent=%.2f%%", rate * 100),
+                "status_code_coverage=" + covered + "/" + total
         );
         Files.write(envFile, lines);
         System.out.println("📌 状态码覆盖率已写入 environment.properties");
