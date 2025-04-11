@@ -22,7 +22,7 @@ pipeline {
         stage('🔨 构建 & 执行测试') {
             steps {
                 echo "开始执行接口测试"
-                sh 'mvn clean test -s /var/jenkins_home/settings.xml'
+                sh 'mvn test -s /var/jenkins_home/settings.xml'
             }
         }
         stage('📊 接口测试覆盖率分析') {
