@@ -22,11 +22,18 @@ pipeline {
         stage('🔨 构建 & 执行测试') {
             steps {
                 echo "开始执行接口测试"
-                sh 'mvn test -s /var/jenkins_home/settings.xml'
+                sh 'mvn clean test -s /var/jenkins_home/settings.xml'
+
+                // ✅ 保存测试产物（如测试日志、target/目录等）
+                stash name: 'build-artifacts', includes: 'target/**'
+
             }
         }
         stage('📊 接口测试覆盖率分析') {
                     steps {
+                        // ✅ 恢复之前构建阶段的产物
+                        unstash 'build-artifacts'
+
                         echo "开始生成接口覆盖率分析"
                         // url维度 ，statusCode维度
 //                         sh '''
