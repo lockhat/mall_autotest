@@ -130,6 +130,12 @@
             <artifactId>logback-classic</artifactId>
             <version>1.4.11</version>
         </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-java-commons</artifactId>
+            <version>2.28.0</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
     <properties>
