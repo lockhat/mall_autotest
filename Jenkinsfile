@@ -22,7 +22,7 @@ pipeline {
         stage('🔨 构建 & 执行测试') {
             steps {
                 echo "开始执行接口测试"
-                sh 'mvn clean test -s /var/jenkins_home/settings.xml'
+                sh 'mvn clean test -T 1 -s /var/jenkins_home/settings.xml'
 
                 // ✅ 保存测试产物（如测试日志、target/目录等）
                 stash name: 'build-artifacts', includes: 'target/**'
