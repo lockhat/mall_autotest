@@ -8,6 +8,8 @@ pipeline {
 
     environment {
         GIT_REPO = 'git@github.com:lockhat/mall_autotest.git'
+        PYTHON_COVERAGE_CLI = 'python3 scripts/run_coverage.py'
+
     }
 
     stages {
@@ -27,10 +29,13 @@ pipeline {
                     steps {
                         echo "开始生成接口覆盖率分析"
                         // url维度 ，statusCode维度
-                        sh '''
-                            mvn exec:java -Dexec.mainClass=com.mycompany.mall.admin.utils.UrlCoverageRunner
-                            mvn exec:java -Dexec.mainClass=com.mycompany.mall.admin.utils.StatusCodeCoverageRunner
-                        '''
+//                         sh '''
+//                             mvn exec:java -Dexec.mainClass=com.mycompany.mall.admin.utils.UrlCoverageRunner
+//                             mvn exec:java -Dexec.mainClass=com.mycompany.mall.admin.utils.StatusCodeCoverageRunner
+//                         '''
+                           sh '''
+                               ${PYTHON_COVERAGE_CLI} --type all || echo "覆盖率分析失败但不中断流水线"
+                           '''
                     }
                 }
     }
