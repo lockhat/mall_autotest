@@ -1,0 +1,63 @@
+.
+├── Jenkinsfile
+├── README.md
+├── pom.xml
+├── scripts
+│   ├── compare_status_code_coverage.py
+│   ├── compare_url_coverage.py
+│   ├── extract_swagger_status_codes.py
+│   ├── extract_swagger_urls.py
+│   ├── extract_tested_status_codes.py
+│   ├── extract_tested_urls.py
+│   └── run_coverage.py
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── mycompany
+│   │   │           └── mall
+│   │   │               └── admin
+│   │   │                   ├── base
+│   │   │                   │   ├── Config.java
+│   │   │                   │   ├── DBUtil.java
+│   │   │                   │   ├── HttpClientUtil.java
+│   │   │                   │   ├── HttpResponseWrapper.java
+│   │   │                   │   ├── Log.java
+│   │   │                   │   └── ThrowingSupplier.java
+│   │   │                   ├── data
+│   │   │                   ├── entity
+│   │   │                   │   └── UmsMember.java
+│   │   │                   └── utils
+│   │   │                       ├── StatusCodeCoverageAnalyzer.java
+│   │   │                       ├── StatusCodeCoverageRunner.java
+│   │   │                       ├── StatusCodeSwaggerExtractor.java
+│   │   │                       ├── StatusCodeTestedCollector.java
+│   │   │                       ├── UrlCoverageAnalyzer.java
+│   │   │                       ├── UrlCoverageRunner.java
+│   │   │                       └── UrlTestedCollector.java
+│   │   └── resources
+│   │       └── config-test.properties
+│   └── test
+│       ├── java
+│       │   └── com
+│       │       └── mycompany
+│       │           └── mall
+│       │               └── admin
+│       │                   ├── business
+│       │                   │   ├── order
+│       │                   │   ├── product
+│       │                   │   │   └── PreferenceAreaTest.java
+│       │                   │   └── user
+│       │                   │       └── LoginTest.java
+│       │                   └── framework
+│       │                       ├── DBTest.java
+│       │                       ├── TestBase.java
+│       │                       └── TestListener.java
+│       └── resources
+│           ├── logback.xml
+│           ├── test-data
+│           │   └── login.json
+│           └── testng.xml
+└── structure.txt
+
+26 directories, 34 files

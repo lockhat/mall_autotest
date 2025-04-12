@@ -10,22 +10,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.mall.admin.base.Config;
 import com.mycompany.mall.admin.base.HttpClientUtil;
-import com.mycompany.mall.admin.base.Log;
 import org.testng.annotations.BeforeSuite;
 import io.qameta.allure.Allure;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileWriter;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 public class TestBase {
 
-    protected final Logger log = Log.get(this.getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
     protected ObjectMapper objectMapper = new ObjectMapper();
 
     /**
