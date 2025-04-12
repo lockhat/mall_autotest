@@ -1,32 +1,69 @@
 🚩 Mall 接口自动化测试项目
 
-本项目基于 Java + TestNG + HttpClient + Allure，实现对 mall 后台管理系统接口的自动化测试，涵盖用户登录、优选区商品查询等核心功能。
+本项目基于 Java + TestNG + HttpClient + Allure，实现对 mall 后台管理系统接口的自动化测试，业务测试模块仍建设中。
 
 ---
 
 ## 📁 项目结构说明
 ```
 mall-autotest/
-├── src/
-│   ├── main/
-│   │   ├── java/com/mycompany/mall/admin/
-│   │   │   ├── base/         # 核心工具类：HTTP、DB、日志
-│   │   │   ├── entity/       # 数据库实体类（如 UmsMember）
-│   │   │   └── utils/        # 可复用工具类（如 JSON 解析等）
-│   │   └── resources/        # 配置文件（如 Druid 配置）
-│   └── test/
-│       ├── java/com/mycompany/mall/admin/
-│       │   ├── framework/    # 测试基类（TestBase）
-│       │   └── testcase/     # 测试用例主目录（按模块划分）
-│       │       ├── user/         # 用户模块（LoginTest）
-│       │       └── product/      # 商品模块（PreferenceAreaTest）
-│       └── resources/
-│           ├── test-data/    # 测试数据 JSON / YAML
-            ├── logback.xml  # 日志配置文件
-│           └── testng.xml   # 灵活调整测试用例执行
-├── pom.xml                  # Maven 构建配置
-├── Jenkinsfile             # Jenkins 流水线配置
-└── README.md               # 项目说明文档
+├── Jenkinsfile   # Jenkins 流水线配置
+├── README.md
+├── pom.xml   # Maven 配置（依赖管理、插件）
+├── scripts             # 接口测试覆盖率分析脚本
+│   ├── compare_status_code_coverage.py
+│   ├── compare_url_coverage.py
+│   ├── extract_swagger_status_codes.py
+│   ├── extract_swagger_urls.py
+│   ├── extract_tested_status_codes.py
+│   ├── extract_tested_urls.py
+│   └── run_coverage.py
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── mycompany
+│   │   │           └── mall
+│   │   │               └── admin
+│   │   │                   ├── base  # 基础层（公共工具类）
+│   │   │                   │   ├── Config.java # 配置文件解析
+│   │   │                   │   ├── DBUtil.java  # 数据库操作工具类
+│   │   │                   │   ├── HttpClientUtil.java # HTTP 请求封装
+│   │   │                   │   ├── HttpResponseWrapper.java  # HTTP 响应体封装
+│   │   │                   │   └── ThrowingSupplier.java
+│   │   │                   ├── data
+│   │   │                   ├── entity # 数据实体
+│   │   │                   │   └── UmsMember.java
+│   │   │                   └── utils  # 辅助工具类-测试覆盖率分析，java，和上面的py脚本功能相同
+│   │   │                       ├── StatusCodeCoverageAnalyzer.java
+│   │   │                       ├── StatusCodeCoverageRunner.java
+│   │   │                       ├── StatusCodeSwaggerExtractor.java
+│   │   │                       ├── StatusCodeTestedCollector.java
+│   │   │                       ├── UrlCoverageAnalyzer.java
+│   │   │                       ├── UrlCoverageRunner.java
+│   │   │                       └── UrlTestedCollector.java
+│   │   └── resources
+│   │       └── config-test.properties。# 环境配置项等
+│   └── test
+│       ├── java
+│       │   └── com
+│       │       └── mycompany
+│       │           └── mall
+│       │               └── admin
+│       │                   ├── business   # 业务层（模块化用例）
+│       │                   │   ├── order
+│       │                   │   ├── product
+│       │                   │   │   └── PreferenceAreaTest.java
+│       │                   │   └── user
+│       │                   │       └── LoginTest.java
+│       │                   └── framework  # 执行层（框架核心）
+│       │                       ├── TestBase.java
+│       │                       └── TestListener.java  # 测试基类（初始化配置）
+│       └── resources
+│           ├── logback.xml   # 日志配置
+│           ├── test-data    # 测试数据驱动
+│           │   └── login.json
+│           └── testng.xml  # TestNG 配置文件
 
 ```
 ---
@@ -56,8 +93,6 @@ allure serve target/allure-results
 | `HttpResponseWrapper` | 封装响应体与状态码，用于 GET/POST 请求结果处理 |
 | `DBUtil`           | 使用 Druid + Apache DbUtils 实现数据库连接与查询封装 |
 | `Config`   | 配置文件读取 |
-| `Log`              | 使用 SLF4J 封装日志生成器，统一日志输出入口 |
-
 
 
 ### ✅ 测试用例结构
@@ -73,8 +108,8 @@ allure serve target/allure-results
 
 | 类名       | 说明 |
 |------------|------|
-| `TestBase` | 所有测试类的基类，提供 token 获取、测试数据加载等通用方法 |
-
+| `TestBase` | 所有测试类的基类，提供 token 获取、测试数据加载、异常捕获并打印到日志和Allure报告等通用方法 |
+| `TestListener` | 自动采集失败信息，并展示到Allure报告中 |
 
 ### ✅ 测试数据示例（login.json）
 
@@ -94,20 +129,33 @@ allure serve target/allure-results
 ```
 
 使用方法：
+- 使用TestNG 的 @DataProvider 数据驱动
+- 通过TestBase中的getTestData 方法获取资源文件
 
 ```java
-JsonNode testData = getTestData("test-data/login.json", "testUser");
-String json = objectMapper.writeValueAsString(testData);
-```
+@DataProvider(name = "loginData")
+public Object[][] loginData() throws Exception {
+    JsonNode root = getTestData("test-data/login.json", null);
+    ...
+}
 
+```
 ---
+
+### ✅测试用例覆盖率脚本
+路径：`/mall/scripts/run_coverage.py`
+
+| 命令参数       | 执行脚本组合                                                                 | 功能说明                          |
+|----------------|------------------------------------------------------------------------------|-----------------------------------|
+| `--type url`    | `extract_tested_urls.py → extract_swagger_urls.py → compare_url_coverage.py` | 只按 URL 维度提取和对比覆盖率     |
+| `--type status` | `extract_swagger_status_codes.py → extract_tested_status_codes.py → compare_status_code_coverage.py` | 只按状态码维度提取和对比覆盖率   |
+| `--type all`（默认） | 上述两个流程所有脚本都执行                                                 | 两种维度都做统计                  |
 
 ## 📄 日志配置说明（logback.xml）
 
 - 配置路径：`src/test/resources/logback.xml`
 - 日志输出：控制台 + 每日文件（路径：`target/logs/test-YYYY-MM-DD.log`）
 - 支持自动轮转，保留最近 7 天日志
-
 ---
 
 ## 🧪 用例组织与执行方式
@@ -120,20 +168,26 @@ String json = objectMapper.writeValueAsString(testData);
 ### ✅ 测试套件示例：`src/test/resources/testng.xml`
 
 ```xml
-<suite name="Mall接口自动化测试套件">
-  <parameter name="env" value="test" />
+<suite name="Mall接口自动化测试套件" parallel="false">
+    <listeners>
+        <listener class-name="com.mycompany.mall.admin.framework.TestListener"/>
+    </listeners>
 
-  <test name="用户模块">
-    <classes>
-      <class name="com.mycompany.mall.admin.business.user.LoginTest"/>
-    </classes>
-  </test>
+    <!-- 可选参数：传递环境变量（供 TestBase 使用） -->
+    <parameter name="env" value="test" />
 
-  <test name="商品模块">
-    <classes>
-      <class name="com.mycompany.mall.admin.business.product.PreferenceAreaTest"/>
-    </classes>
-  </test>
+    <test name="用户模块测试">
+        <classes>
+            <class name="com.mycompany.mall.admin.business.user.LoginTest"/>
+        </classes>
+    </test>
+
+    <test name="商品模块测试">
+        <classes>
+            <class name="com.mycompany.mall.admin.business.product.PreferenceAreaTest"/>
+        </classes>
+    </test>
+
 </suite>
 ```
 
@@ -213,7 +267,7 @@ target/allure-results/
 mvn clean test
 ```
 
-> `pom.xml` 中已配置了 `maven-surefire-plugin` 与 `testng.xml`，Allure 集成也已自动开启。
+> `pom.xml` 中已配置了 `maven-surefire-plugin` ，并设置suiteXmlFiles =  `testng.xml`，Allure 集成也已自动开启。
 
 
 ### ✅ 查看报告（本地）
@@ -234,11 +288,7 @@ allure serve target/allure-results
 Allure 会自动生成 HTML 报告并打开浏览器预览。
 
 报告用例详情（支持描述、参数、分组等）：
-<img width="1434" alt="image" src="https://github.com/user-attachments/assets/e8cf51ad-d612-45ea-a89a-12bf37bd0369" />
-
-异常日志附件
-<img width="1430" alt="image" src="https://github.com/user-attachments/assets/fdbd8450-5d25-4c48-84e5-fca3aa87e73d" />
-
+<img width="1172" alt="image" src="https://github.com/user-attachments/assets/99089bea-3838-4c0e-9556-b35195fdd18c" />
 
 ### ✅ 环境信息自动展示
 
@@ -261,10 +311,6 @@ baseUrl=http://60.204.173.174:8080
 | baseUrl | http://60.204.173.174:8080     |
 
 
-报告首页概览（包含用例数、环境变量等）：
-![image](https://github.com/user-attachments/assets/866c5ca8-75c6-45e4-b249-c32a5636297a)
-
-
 ### 🛠 无需手动配置
 
 - 报告环境信息由 `TestBase.java` 中自动生成  
@@ -273,6 +319,19 @@ baseUrl=http://60.204.173.174:8080
 
 
 ---
+
+## ⚙️ 可持续集成
+- Jenkins环境准备：
+  - 安装插件Pipeline、Allure Jenkins Plugin
+  - 设置 JDK + Maven
+- JenkinsFile配置
+- Jenkins 任务配置要点
+  - 新建任务 → 类型选择 “Pipeline”
+  - 配置源码管理：Git 仓库地址、凭据使用 SSH
+  - 构建触发器
+    - 每次 push 自动触发：勾选「GitHub hook trigger for GITScm polling」+ GitHub Webhook 配置
+    - or 定期触发
+  
 
 
 ## ✅ 整合说明：
@@ -286,7 +345,7 @@ baseUrl=http://60.204.173.174:8080
 
 ## 🧠 总结
 
-- 简洁封装：HTTP、DB、日志三大工具类解耦独立
+- 简洁封装：HTTP、DB、日志工具类
 - 测试清晰：业务分包、数据驱动、基类统一
 - 报告可视化：结合 Allure 展示测试步骤与断言信息
 - 可持续集成：集成 Jenkins 流水线配置，支持 CI 触发测试
